@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.todolist.mapper.TaskMapper">
+
+    <resultMap id="TaskVOResultMap" type="com.todolist.vo.TaskVO">
+        <id property="id" column="id"/>
+        <result property="title" column="title"/>
+        <result property="description" column="description"/>
+        <result property="groupid" column="groupid"/>
+        <result property="groupname" column="groupname"/>
+        <result property="groupcolor" column="groupcolor"/>
+        <result property="priority" column="priority"/>
+        <result property="status" column="status"/>
+        <result property="duedate" column="duedate"/>
+        <result property="completedtime" column="completedtime"/>
+        <result property="createtime" column="createtime"/>
+        <result property="updatetime" column="updatetime"/>
+    </resultMap>
+
+    <select id="selectTaskVOList" resultMap="TaskVOResultMap">
+        SELECT t.id, t.title, t.description, t.groupid, t.priority, t.status, t.duedate,
+               t.completedtime, t.createtime, t.updatetime,
+               g.name as groupname, g.color as groupcolor
+        FROM task t
+        LEFT JOIN group g ON t.groupid = g.id AND g.deleted = 0
+        WHERE t.deleted = 0 AND t.userid = #{userid}
+        <if test="status != null">
+            AND t.status = #{status}
+        </if>
+        ORDER BY t.priority DESC, t.duedate ASC, t.createtime DESC
+    </select>
+
+    <select id="selectAllTaskVOList" resultMap="TaskVOResultMap">
+        SELECT t.id, t.title, t.description, t.groupid, t.priority, t.status, t.duedate,
+               t.completedtime, t.createtime, t.updatetime,
+               g.name as groupname, g.color as groupcolor
+        FROM task t
+        LEFT JOIN group g ON t.groupid = g.id AND g.deleted = 0
+        WHERE t.deleted = 0
+        <if test="status != null">
+            AND t.status = #{status}
+        </if>
+        ORDER BY t.priority DESC, t.duedate ASC, t.createtime DESC
+    </select>
+
+</mapper>
