@@ -64,7 +64,10 @@ public class UserService {
         }
 
         User user = new User();
-        BeanUtils.copyProperties(dto, user);
+        user.setUsername(dto.getUsername());
+        user.setNickname(dto.getNickname());
+        user.setRole(dto.getRole());
+        user.setEnabled(dto.getEnabled() != null && dto.getEnabled() ? 1 : 0);
         user.setPassword(passwordEncoder.encode(dto.getPassword()));
         user.setDeleted(0);
         user.setCreatetime(LocalDateTime.now());
@@ -89,7 +92,12 @@ public class UserService {
             }
         }
 
-        BeanUtils.copyProperties(dto, user, "password", "deleted", "createtime", "createuser");
+        user.setUsername(dto.getUsername());
+        user.setNickname(dto.getNickname());
+        user.setRole(dto.getRole());
+        if (dto.getEnabled() != null) {
+            user.setEnabled(dto.getEnabled() ? 1 : 0);
+        }
         if (dto.getPassword() != null && !dto.getPassword().isEmpty()) {
             user.setPassword(passwordEncoder.encode(dto.getPassword()));
         }
