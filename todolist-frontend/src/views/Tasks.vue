@@ -55,37 +55,37 @@
         </div>
       </template>
 
-      <el-form inline>
-        <el-form-item label="状态">
-          <el-select v-model="filter.status" clearable placeholder="全部" style="width: 120px">
-            <el-option label="待办" :value="1" />
-            <el-option label="进行中" :value="2" />
-            <el-option label="已完成" :value="3" />
-          </el-select>
-        </el-form-item>
-        <el-form-item label="分组">
-          <el-select v-model="filter.groupid" clearable placeholder="全部" style="width: 150px">
-            <el-option v-for="g in groups" :key="g.id" :label="g.name" :value="g.id" />
-          </el-select>
-        </el-form-item>
-        <el-form-item label="优先级">
-          <el-select v-model="filter.priority" clearable placeholder="全部" style="width: 120px">
-            <el-option label="紧急" :value="4" />
-            <el-option label="高" :value="3" />
-            <el-option label="中" :value="2" />
-            <el-option label="低" :value="1" />
-          </el-select>
-        </el-form-item>
-        <el-form-item>
-          <el-button type="primary" @click="handleSearch">搜索</el-button>
-        </el-form-item>
-        <el-form-item>
-          <el-button @click="handleReset">重置</el-button>
-        </el-form-item>
-        <el-form-item>
-          <el-button type="warning" @click="batchChangeStatus">批量修改状态</el-button>
-        </el-form-item>
-      </el-form>
+      <div class="filter-row">
+        <el-form inline>
+          <el-form-item label="状态">
+            <el-select v-model="filter.status" clearable placeholder="全部" style="width: 120px">
+              <el-option label="待办" :value="1" />
+              <el-option label="进行中" :value="2" />
+              <el-option label="已完成" :value="3" />
+            </el-select>
+          </el-form-item>
+          <el-form-item label="分组">
+            <el-select v-model="filter.groupid" clearable placeholder="全部" style="width: 150px">
+              <el-option v-for="g in groups" :key="g.id" :label="g.name" :value="g.id" />
+            </el-select>
+          </el-form-item>
+          <el-form-item label="优先级">
+            <el-select v-model="filter.priority" clearable placeholder="全部" style="width: 120px">
+              <el-option label="紧急" :value="4" />
+              <el-option label="高" :value="3" />
+              <el-option label="中" :value="2" />
+              <el-option label="低" :value="1" />
+            </el-select>
+          </el-form-item>
+          <el-form-item>
+            <el-button type="primary" @click="handleSearch">搜索</el-button>
+          </el-form-item>
+          <el-form-item>
+            <el-button @click="handleReset">重置</el-button>
+          </el-form-item>
+        </el-form>
+        <el-button type="warning" class="batch-btn" @click="batchChangeStatus">批量修改状态</el-button>
+      </div>
 
       <el-table :data="tasks" @selection-change="handleSelectionChange">
         <el-table-column type="selection" width="50" />
@@ -422,6 +422,21 @@ onMounted(() => {
   display: flex;
   justify-content: space-between;
   align-items: center;
+}
+
+.filter-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  margin-bottom: 15px;
+}
+
+.filter-row .el-form {
+  flex: 1;
+}
+
+.batch-btn {
+  margin-top: 4px;
 }
 
 .pagination-container {
