@@ -15,7 +15,7 @@ public class UserVO {
 
     private String role;
 
-    private Integer enabled;
+    private Boolean enabled;
 
     private LocalDateTime createtime;
 

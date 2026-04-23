@@ -150,7 +150,8 @@ public class UserService {
 
     private UserVO convertToVO(User user) {
         UserVO vo = new UserVO();
-        BeanUtils.copyProperties(user, vo);
+        BeanUtils.copyProperties(user, vo, "enabled");
+        vo.setEnabled(user.getEnabled() != null && user.getEnabled() == 1);
         return vo;
     }
 
