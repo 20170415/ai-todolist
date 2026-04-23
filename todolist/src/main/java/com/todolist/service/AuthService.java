@@ -1,5 +1,6 @@
 package com.todolist.service;
 
+import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.todolist.common.Constants;
 import com.todolist.common.Result;
 import com.todolist.dto.LoginDTO;
@@ -33,7 +34,9 @@ public class AuthService {
     private final RedisUtils redisUtils;
 
     public Result<Map<String, Object>> login(LoginDTO dto) {
-        User user = userMapper.selectById(dto.getUsername());
+        LambdaQueryWrapper<User> wrapper = new LambdaQueryWrapper<>();
+        wrapper.eq(User::getUsername, dto.getUsername());
+        User user = userMapper.selectOne(wrapper);
 
         if (user == null || user.getEnabled() == 0) {
             throw new BusinessException("用户不存在或已禁用");
