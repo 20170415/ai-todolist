@@ -21,8 +21,8 @@
         SELECT t.id, t.title, t.description, t.groupid, t.priority, t.status, t.duedate,
                t.completedtime, t.createtime, t.updatetime,
                g.name as groupname, g.color as groupcolor
-        FROM task t
-        LEFT JOIN group g ON t.groupid = g.id AND g.deleted = 0
+        FROM t_tasks t
+        LEFT JOIN t_groups g ON t.groupid = g.id AND g.deleted = 0
         WHERE t.deleted = 0 AND t.userid = #{userid}
         <if test="status != null">
             AND t.status = #{status}
@@ -34,8 +34,8 @@
         SELECT t.id, t.title, t.description, t.groupid, t.priority, t.status, t.duedate,
                t.completedtime, t.createtime, t.updatetime,
                g.name as groupname, g.color as groupcolor
-        FROM task t
-        LEFT JOIN group g ON t.groupid = g.id AND g.deleted = 0
+        FROM t_tasks t
+        LEFT JOIN t_groups g ON t.groupid = g.id AND g.deleted = 0
         WHERE t.deleted = 0
         <if test="status != null">
             AND t.status = #{status}
