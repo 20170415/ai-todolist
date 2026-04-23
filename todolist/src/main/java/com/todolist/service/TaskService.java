@@ -1,9 +1,12 @@
 package com.todolist.service;
 
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
+import com.baomidou.mybatisplus.core.metadata.IPage;
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.todolist.common.enums.StatusEnum;
 import com.todolist.dto.BatchStatusDTO;
 import com.todolist.dto.TaskDTO;
+import com.todolist.dto.TaskQueryDTO;
 import com.todolist.entity.Task;
 import com.todolist.exception.BusinessException;
 import com.todolist.mapper.TaskMapper;
@@ -21,6 +24,11 @@ import java.util.List;
 public class TaskService {
 
     private final TaskMapper taskMapper;
+
+    public IPage<TaskVO> getTaskPage(Long userId, TaskQueryDTO query) {
+        Page<TaskVO> page = new Page<>(query.getPage(), query.getSize());
+        return taskMapper.selectTaskVOPage(page, userId, query.getStatus(), query.getGroupid(), query.getPriority());
+    }
 
     public List<TaskVO> getTaskList(Long userId) {
         return taskMapper.selectTaskVOList(userId, null);

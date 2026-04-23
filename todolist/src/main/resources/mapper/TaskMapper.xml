@@ -43,4 +43,23 @@
         ORDER BY t.priority DESC, t.duedate ASC, t.createtime DESC
     </select>
 
+    <select id="selectTaskVOPage" resultMap="TaskVOResultMap">
+        SELECT t.id, t.title, t.description, t.groupid, t.priority, t.status, t.duedate,
+               t.completedtime, t.createtime, t.updatetime,
+               g.name as groupname, g.color as groupcolor
+        FROM t_tasks t
+        LEFT JOIN t_groups g ON t.groupid = g.id AND g.deleted = 0
+        WHERE t.deleted = 0 AND t.userid = #{userid} AND t.status != 4
+        <if test="status != null">
+            AND t.status = #{status}
+        </if>
+        <if test="groupid != null">
+            AND t.groupid = #{groupid}
+        </if>
+        <if test="priority != null">
+            AND t.priority = #{priority}
+        </if>
+        ORDER BY t.priority DESC, t.duedate ASC, t.createtime DESC
+    </select>
+
 </mapper>

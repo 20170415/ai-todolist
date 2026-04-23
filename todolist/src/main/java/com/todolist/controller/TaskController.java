@@ -1,8 +1,10 @@
 package com.todolist.controller;
 
+import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.todolist.common.Result;
 import com.todolist.dto.BatchStatusDTO;
 import com.todolist.dto.TaskDTO;
+import com.todolist.dto.TaskQueryDTO;
 import com.todolist.service.TaskService;
 import com.todolist.vo.TaskVO;
 import lombok.RequiredArgsConstructor;
@@ -20,9 +22,9 @@ public class TaskController {
     private final TaskService taskService;
 
     @GetMapping
-    public Result<List<TaskVO>> getTaskList(@RequestAttribute Long userId) {
-        List<TaskVO> list = taskService.getTaskList(userId);
-        return Result.success(list);
+    public Result<IPage<TaskVO>> getTaskList(@RequestAttribute Long userId, TaskQueryDTO query) {
+        IPage<TaskVO> page = taskService.getTaskPage(userId, query);
+        return Result.success(page);
     }
 
     @GetMapping("/shelved")

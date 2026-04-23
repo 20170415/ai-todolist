@@ -77,11 +77,17 @@
           </el-select>
         </el-form-item>
         <el-form-item>
-          <el-button type="primary" @click="batchChangeStatus">批量修改状态</el-button>
+          <el-button type="primary" @click="handleSearch">搜索</el-button>
+        </el-form-item>
+        <el-form-item>
+          <el-button @click="handleReset">重置</el-button>
+        </el-form-item>
+        <el-form-item>
+          <el-button type="warning" @click="batchChangeStatus">批量修改状态</el-button>
         </el-form-item>
       </el-form>
 
-      <el-table :data="filteredTasks" @selection-change="handleSelectionChange">
+      <el-table :data="tasks" @selection-change="handleSelectionChange">
         <el-table-column type="selection" width="50" />
         <el-table-column prop="title" label="标题" min-width="200" />
         <el-table-column prop="groupname" label="分组" width="100">
@@ -108,6 +114,16 @@
             </span>
           </template>
         </el-table-column>
+        <el-table-column prop="createtime" label="创建时间" width="150">
+          <template #default="{ row }">
+            {{ formatDate(row.createtime) }}
+          </template>
+        </el-table-column>
+        <el-table-column prop="updatetime" label="更新时间" width="150">
+          <template #default="{ row }">
+            {{ formatDate(row.updatetime) }}
+          </template>
+        </el-table-column>
         <el-table-column label="操作" width="180">
           <template #default="{ row }">
             <el-button size="small" @click="editTask(row)">编辑</el-button>
@@ -115,6 +131,18 @@
           </template>
         </el-table-column>
       </el-table>
+
+      <div class="pagination-container">
+        <el-pagination
+          v-model:current-page="pagination.page"
+          v-model:page-size="pagination.size"
+          :page-sizes="[10, 20, 50, 100]"
+          :total="pagination.total"
+          layout="total, sizes, prev, pager, next, jumper"
+          @size-change="handleSizeChange"
+          @current-change="handleCurrentChange"
+        />
+      </div>
     </el-card>
 
     <el-dialog v-model="dialogVisible" :title="isEdit ? '编辑任务' : '新增任务'" width="500px">
@@ -176,7 +204,7 @@
 </template>
 
 <script setup>
-import { ref, reactive, computed, onMounted } from 'vue'
+import { ref, reactive, onMounted } from 'vue'
 import { ElMessage, ElMessageBox } from 'element-plus'
 import { getTaskList, createTask, updateTask, deleteTask as deleteTaskApi, batchUpdateStatus, getTaskStats } from '../api/task'
 import { getGroupList } from '../api/group'
@@ -195,6 +223,12 @@ const filter = reactive({
   status: null,
   groupid: null,
   priority: null
+})
+
+const pagination = reactive({
+  page: 1,
+  size: 10,
+  total: 0
 })
 
 const selectedTasks = ref([])
@@ -218,18 +252,17 @@ const taskRules = {
   title: [{ required: true, message: '请输入标题', trigger: 'blur' }]
 }
 
-const filteredTasks = computed(() => {
-  return tasks.value.filter(task => {
-    if (filter.status && task.status !== filter.status) return false
-    if (filter.groupid && task.groupid !== filter.groupid) return false
-    if (filter.priority && task.priority !== filter.priority) return false
-    return true
-  })
-})
-
 const fetchTasks = async () => {
-  const res = await getTaskList()
-  tasks.value = res.data
+  const params = {
+    page: pagination.page,
+    size: pagination.size,
+    status: filter.status,
+    groupid: filter.groupid,
+    priority: filter.priority
+  }
+  const res = await getTaskList(params)
+  tasks.value = res.data.records
+  pagination.total = res.data.total
 }
 
 const fetchGroups = async () => {
@@ -240,6 +273,28 @@ const fetchGroups = async () => {
 const fetchStats = async () => {
   const res = await getTaskStats()
   stats.value = res.data
+}
+
+const handleSearch = () => {
+  pagination.page = 1
+  fetchTasks()
+}
+
+const handleReset = () => {
+  filter.status = null
+  filter.groupid = null
+  filter.priority = null
+  pagination.page = 1
+  fetchTasks()
+}
+
+const handleSizeChange = () => {
+  pagination.page = 1
+  fetchTasks()
+}
+
+const handleCurrentChange = () => {
+  fetchTasks()
 }
 
 const handleSelectionChange = (selection) => {
@@ -367,6 +422,12 @@ onMounted(() => {
   display: flex;
   justify-content: space-between;
   align-items: center;
+}
+
+.pagination-container {
+  margin-top: 20px;
+  display: flex;
+  justify-content: flex-end;
 }
 
 .overdue {

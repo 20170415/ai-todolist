@@ -1,7 +1,7 @@
 import request from '../utils/request'
 
-export function getTaskList() {
-  return request.get('/tasks')
+export function getTaskList(params) {
+  return request.get('/tasks', { params })
 }
 
 export function getShelvedTaskList() {
