@@ -58,11 +58,13 @@ CREATE TABLE t_tasks (
 
 -- 初始化管理员账号
 INSERT INTO t_users (username, password, nickname, role, enabled, deleted, createtime, updatetime)
-VALUES ('admin', '$2a$10$N.zmdr9k7uOCQb376NoUnuTJ8iAt6Z5EHsM8lE9lBOsl7iAt6Z5EH', '管理员', 'admin', 1, 0, NOW(), NOW());
+VALUES ('admin', '$2a$10$2WenNzy3S2nAG0N9B01YMuGMqEi4aZfV48B2PZhHZf1R19o4EQODq', '管理员', 'admin', 1, 0, NOW(), NOW());
 
 -- 初始化默认分组
 INSERT INTO t_groups (userid, name, color, deleted, createtime, updatetime)
 VALUES (NULL, '默认', '#409EFF', 0, NOW(), NOW());
+
+UPDATE t_users SET password = '$2a$10$2WenNzy3S2nAG0N9B01YMuGMqEi4aZfV48B2PZhHZf1R19o4EQODq' WHERE username = 'admin';
 
 -- 注意：管理员默认密码为 admin123，上面的密码是BCrypt加密后的值
 -- 实际部署时请修改密码
