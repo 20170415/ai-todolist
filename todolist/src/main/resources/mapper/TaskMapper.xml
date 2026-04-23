@@ -15,14 +15,17 @@
         <result property="completedtime" column="completedtime"/>
         <result property="createtime" column="createtime"/>
         <result property="updatetime" column="updatetime"/>
+        <result property="createUserNickname" column="createUserNickname"/>
     </resultMap>
 
     <select id="selectTaskVOList" resultMap="TaskVOResultMap">
         SELECT t.id, t.title, t.description, t.groupid, t.priority, t.status, t.duedate,
                t.completedtime, t.createtime, t.updatetime,
-               g.name as groupname, g.color as groupcolor
+               g.name as groupname, g.color as groupcolor,
+               u.nickname as createUserNickname
         FROM t_tasks t
         LEFT JOIN t_groups g ON t.groupid = g.id AND g.deleted = 0
+        LEFT JOIN t_users u ON t.createuser = u.id AND u.deleted = 0
         WHERE t.deleted = 0 AND t.userid = #{userid}
         <if test="status != null">
             AND t.status = #{status}
@@ -33,9 +36,11 @@
     <select id="selectAllTaskVOList" resultMap="TaskVOResultMap">
         SELECT t.id, t.title, t.description, t.groupid, t.priority, t.status, t.duedate,
                t.completedtime, t.createtime, t.updatetime,
-               g.name as groupname, g.color as groupcolor
+               g.name as groupname, g.color as groupcolor,
+               u.nickname as createUserNickname
         FROM t_tasks t
         LEFT JOIN t_groups g ON t.groupid = g.id AND g.deleted = 0
+        LEFT JOIN t_users u ON t.createuser = u.id AND u.deleted = 0
         WHERE t.deleted = 0
         <if test="status != null">
             AND t.status = #{status}
@@ -46,9 +51,11 @@
     <select id="selectTaskVOPage" resultMap="TaskVOResultMap">
         SELECT t.id, t.title, t.description, t.groupid, t.priority, t.status, t.duedate,
                t.completedtime, t.createtime, t.updatetime,
-               g.name as groupname, g.color as groupcolor
+               g.name as groupname, g.color as groupcolor,
+               u.nickname as createUserNickname
         FROM t_tasks t
         LEFT JOIN t_groups g ON t.groupid = g.id AND g.deleted = 0
+        LEFT JOIN t_users u ON t.createuser = u.id AND u.deleted = 0
         WHERE t.deleted = 0 AND t.userid = #{userid} AND t.status != 4
         <if test="status != null">
             AND t.status = #{status}

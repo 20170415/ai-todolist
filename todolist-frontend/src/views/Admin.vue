@@ -159,6 +159,7 @@
 
           <el-table :data="tasks">
             <el-table-column prop="title" label="标题" min-width="200" />
+            <el-table-column prop="createUserNickname" label="创建人" width="100" />
             <el-table-column prop="groupname" label="分组" width="100">
               <template #default="{ row }">
                 <el-tag v-if="row.groupname" :color="row.groupcolor" effect="dark">
@@ -198,6 +199,7 @@
 
           <el-table :data="shelvedTasks">
             <el-table-column prop="title" label="标题" min-width="200" />
+            <el-table-column prop="createUserNickname" label="创建人" width="100" />
             <el-table-column prop="groupname" label="分组" width="100">
               <template #default="{ row }">
                 <el-tag v-if="row.groupname" :color="row.groupcolor" effect="dark">

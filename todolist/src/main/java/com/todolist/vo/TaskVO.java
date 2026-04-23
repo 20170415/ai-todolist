@@ -37,6 +37,8 @@ public class TaskVO {
 
     private LocalDateTime updatetime;
 
+    private String createUserNickname;
+
     public void setPriority(Integer priority) {
         this.priority = priority;
         PriorityEnum priorityEnum = PriorityEnum.getByCode(priority);
