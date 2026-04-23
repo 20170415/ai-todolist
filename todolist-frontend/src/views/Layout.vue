@@ -66,12 +66,12 @@ const userStore = useUserStore()
 
 const activeMenu = computed(() => route.path)
 
-const handleCommand = (command) => {
+const handleCommand = async (command) => {
   if (command === 'profile') {
     router.push('/profile')
   } else if (command === 'logout') {
-    userStore.logout()
-    router.push('/login')
+    await userStore.logout()
+    window.location.href = '/login'
   }
 }
 </script>
