@@ -131,7 +131,7 @@
             <el-form-item label="密码" prop="password" v-if="!isEdit">
               <el-input v-model="userForm.password" type="password" show-password />
             </el-form-item>
-            <el-form-item label="昵称">
+            <el-form-item label="昵称" prop="nickname">
               <el-input v-model="userForm.nickname" />
             </el-form-item>
             <el-form-item label="角色" prop="role">
@@ -254,6 +254,7 @@ const userForm = reactive({
 const userRules = {
   username: [{ required: true, message: '请输入用户名', trigger: 'blur' }],
   password: [{ required: true, message: '请输入密码', trigger: 'blur' }],
+  nickname: [{ required: true, message: '请输入昵称', trigger: 'blur' }],
   role: [{ required: true, message: '请选择角色', trigger: 'change' }]
 }
 
