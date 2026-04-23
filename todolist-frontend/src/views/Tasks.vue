@@ -76,6 +76,9 @@
             <el-option label="低" :value="1" />
           </el-select>
         </el-form-item>
+        <el-form-item>
+          <el-button type="primary" @click="batchChangeStatus">批量修改状态</el-button>
+        </el-form-item>
       </el-form>
 
       <el-table :data="filteredTasks" @selection-change="handleSelectionChange">
@@ -112,10 +115,6 @@
           </template>
         </el-table-column>
       </el-table>
-
-      <div class="batch-actions" v-if="selectedTasks.length > 0">
-        <el-button size="small" type="primary" @click="batchChangeStatus">批量修改状态</el-button>
-      </div>
     </el-card>
 
     <el-dialog v-model="dialogVisible" :title="isEdit ? '编辑任务' : '新增任务'" width="500px">
@@ -294,6 +293,10 @@ const handleDeleteTask = async (task) => {
 }
 
 const batchChangeStatus = () => {
+  if (selectedTasks.value.length === 0) {
+    ElMessage.warning('请先选择任务')
+    return
+  }
   batchStatus.value = 1
   batchDialogVisible.value = true
 }
@@ -364,10 +367,6 @@ onMounted(() => {
   display: flex;
   justify-content: space-between;
   align-items: center;
-}
-
-.batch-actions {
-  margin-top: 10px;
 }
 
 .overdue {
