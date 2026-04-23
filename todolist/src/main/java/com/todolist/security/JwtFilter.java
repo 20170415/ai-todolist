@@ -1,8 +1,6 @@
 package com.todolist.security;
 
 import cn.hutool.core.util.StrUtil;
-import com.todolist.common.Constants;
-import com.todolist.utils.RedisUtils;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
@@ -31,7 +29,6 @@ public class JwtFilter extends OncePerRequestFilter {
     private String prefix;
 
     private final JwtUtils jwtUtils;
-    private final RedisUtils redisUtils;
 
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain)
@@ -49,14 +46,6 @@ public class JwtFilter extends OncePerRequestFilter {
         }
 
         if (!jwtUtils.validateToken(token)) {
-            filterChain.doFilter(request, response);
-            return;
-        }
-
-        String redisKey = Constants.REDIS_TOKEN_PREFIX + jwtUtils.getUserId(token);
-        String cachedToken = redisUtils.get(redisKey);
-
-        if (!token.equals(cachedToken)) {
             filterChain.doFilter(request, response);
             return;
         }

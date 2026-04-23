@@ -1,7 +1,6 @@
 package com.todolist.service;
 
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
-import com.todolist.common.Constants;
 import com.todolist.common.Result;
 import com.todolist.dto.LoginDTO;
 import com.todolist.dto.UserDTO;
@@ -9,7 +8,6 @@ import com.todolist.entity.User;
 import com.todolist.exception.BusinessException;
 import com.todolist.mapper.UserMapper;
 import com.todolist.security.JwtUtils;
-import com.todolist.utils.RedisUtils;
 import com.todolist.vo.UserVO;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.BeanUtils;
@@ -21,7 +19,6 @@ import java.time.LocalDateTime;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
 
 @Service
@@ -31,7 +28,6 @@ public class AuthService {
     private final UserMapper userMapper;
     private final PasswordEncoder passwordEncoder;
     private final JwtUtils jwtUtils;
-    private final RedisUtils redisUtils;
 
     public Result<Map<String, Object>> login(LoginDTO dto) {
         LambdaQueryWrapper<User> wrapper = new LambdaQueryWrapper<>();
@@ -48,9 +44,6 @@ public class AuthService {
 
         String token = jwtUtils.generateToken(user.getId(), user.getUsername(), user.getRole());
 
-        String redisKey = Constants.REDIS_TOKEN_PREFIX + user.getId();
-        redisUtils.set(redisKey, token, Constants.TOKEN_EXPIRE_SECONDS, TimeUnit.SECONDS);
-
         Map<String, Object> data = new HashMap<>();
         data.put("token", token);
         data.put("user", convertToVO(user));
@@ -59,8 +52,7 @@ public class AuthService {
     }
 
     public void logout(Long userId) {
-        String redisKey = Constants.REDIS_TOKEN_PREFIX + userId;
-        redisUtils.delete(redisKey);
+        // Token will expire naturally, no server-side storage needed
     }
 
     public Map<String, Object> refreshToken(Long userId) {
@@ -70,9 +62,6 @@ public class AuthService {
         }
 
         String token = jwtUtils.generateToken(user.getId(), user.getUsername(), user.getRole());
-
-        String redisKey = Constants.REDIS_TOKEN_PREFIX + user.getId();
-        redisUtils.set(redisKey, token, Constants.TOKEN_EXPIRE_SECONDS, TimeUnit.SECONDS);
 
         Map<String, Object> data = new HashMap<>();
         data.put("token", token);
